@@ -7,8 +7,8 @@ import javax.persistence.*;
 public class Tutorial {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column(name = "title")
 	private String title;
@@ -29,8 +29,12 @@ public class Tutorial {
 		this.published = published;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
