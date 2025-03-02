@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\OpenLogic\\jdk-17.0.13.11-hotspot'
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
+    }
+
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Bo7mid3/spring-boot-angular-15-crud-experiment.git'
+            }
+        }
+
+        stage('build') {
+            steps {
+                dir('spring-boot-server') {
+                bat 'mvnw clean install'
+                }
+            }
+        }
+
+        stage('capture') {
+            steps {
+                archiveArtifacts '**/target/*.jar'
+                junit '**/target/surefire-reports/*.xml'
+                // Configure Jacoco for code coverage
+                jacoco(execPattern: '**/target/jacoco.exec')
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
+
+        success {
+            // Notify on success
+            echo 'Build successful!'
+        }
+
+        unstable {
+            // Notify on unstable build
+            echo 'Build unstable.'
+        }
+
+        failure {
+            // Notify on failure
+            echo 'Build failed!'
+        }
+    }
+}
